@@ -7,7 +7,6 @@ Created by Nixarus. [http://www.nixarus.com]
 
 import configparser
 import subprocess
-import sys
 import os
 import sys
 from collections import OrderedDict
@@ -59,11 +58,6 @@ class RepoManager(object):
                 repo_dict.update({str(index + 1):item})
             return repo_dict
 
-    
-    def id_to_repolist(self, string_of_id):
-        if string_of_id:
-            return string_of_id.split(',')
-
 
     def display_available_repos(self, repodict, header=True):
         
@@ -71,28 +65,22 @@ class RepoManager(object):
             subprocess.call('clear',shell=True)
             print("\nWelcome to RepoMan, these are your available repositories: ")
             print("###########################################################\n")
-        
         if repodict:
             print("#\t\tRepository Name")
             for k in repodict.keys():
                 print(str(k)+"\t\t"+repodict[k])
-            
             print("\nPlease press cntrl+c at any point to exit")
             print("\n\n")
 
     def display_confirmation(self, repolist):
-    
         for repo in repolist:
             print("(X)\t\t"+repo)
             
         
     def start_shell(self):
-       
         sysrepofiles = self.parse_repofile()
-
         if sysrepofiles:
             self.display_available_repos(sysrepofiles)
-
             while True:
                 user_action = input("What repository action would you like to perform? " + str(self.actions) + ": ")
                 if user_action.lower() in [i.lower() for i in self.actions]:
@@ -100,16 +88,11 @@ class RepoManager(object):
                 else:
                     print("Please type your option: enable or disable")
 
-
             while True:
-
                 user_options = input("Please provide the repository numbers, seperated by comma: ")
-
                 if user_options:
-                    id_list = self.id_to_repolist(user_options)
-                
+                    id_list = user_options.split(',')
                     actionable_repos = []
-
                     for id in id_list:
                         if id in sysrepofiles.keys():
                             actionable_repos.append(sysrepofiles[id])
@@ -123,15 +106,12 @@ class RepoManager(object):
                 print("---------------Valid Repos-----------------")
                 self.display_confirmation(actionable_repos)
                 user_confirm = input("We should " + user_action + " the above repo(s) only? " + str(self.confirm) + ": ")
-                
                 if user_confirm.lower() in [i.lower() for i in self.confirm]:
-                    
                     if user_confirm.lower() =="yes":
                         self.process_request(user_action, actionable_repos)
                         break
                     else:
                         sys.exit(0)
-                
         else:
             print("Sorry we could not find any repository listed")
             print("Please register the system with (Certificate-based) RHN and run yum repolist")
@@ -140,7 +120,6 @@ class RepoManager(object):
 
 
     def process_request(self, action, repolist):
-       
         if action.lower() == "enable":
             continous_form = "Enabling"
         if action.lower() == "disable":
@@ -166,7 +145,6 @@ def main():
 
 
 if __name__ == '__main__':
-
     try:
         main()
     except KeyboardInterrupt:
