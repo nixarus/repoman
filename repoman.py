@@ -64,7 +64,7 @@ class RepoManager(object):
         if header:
             subprocess.call('clear',shell=True)
             print("\nWelcome to RepoMan, these are your available repositories: ")
-            print("###########################################################\n")
+            print("#"*58)
         if repodict:
             print("#\t\tRepository Name")
             for k in repodict.keys():
@@ -103,7 +103,7 @@ class RepoManager(object):
 
             while True:
 
-                print("---------------Valid Repos-----------------")
+                print("-"*25+"Valid Repos"+"-"*30)
                 self.display_confirmation(actionable_repos)
                 user_confirm = input("We should " + user_action + " the above repo(s) only? " + str(self.confirm) + ": ")
                 if user_confirm.lower() in [i.lower() for i in self.confirm]:
@@ -127,7 +127,7 @@ class RepoManager(object):
 
         print("\n")
         print("Processing repositories. Please wait, this might take some time...")
-        print("------------------------------------------------------------------")
+        print("-"*66)
         print("\n")        
 
         for repo in repolist:
