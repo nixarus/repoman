@@ -1,45 +1,52 @@
+#! /usr/bin/env python
+"""
+
+"""
 import configparser
+import subprocess
 
 
-class RepoMan():
+class RepoManager(object):
+    
+    def __init__(self):
+
+        #self.action = null
+        #self.uoptions = null
+        #self.repofile = self.getRepoFile()
+        self.repofile = 'sample.ini'
 
 
-    def __init__():
-
-        self.action = null
-        self.uoptions = null
-        self.repofile = null
-
-
-    def parseRepoFile():
-        #return an enumerated biglist of available repository names
-        
-        repofile = "/etc/yum.repos.d/redhat.repo"
-        #check if file exists
-        config = configparser.ConfigParser()
-        config.read(repofile)
+    def getRepoFile(self):
+        #search the filesystem to look for the repo file
         pass
 
-    def parseUserInput(inputType):
+
+    def parseRepoFile(self):
+
+        #return a list of available repository names
+        if self.repofile:
+            config = configparser.ConfigParser()
+            config.read(self.repofile)
+            available_repos  = config.sections()
+
+            #if not available_repos:
+            #use subprocess.call to run the yum repolist command           
+
+
+    def startshell(self):
         #clean the user input based on type
-        return uoptions and action
-        
-        pass
-
-    def processRequest(action, biglist, uoptions)
+        #return uoptions and action
         pass
 
 
+    def processRequest(self, action, choosenlist, uoptions):
+        pass
 
 
-
-        
-def __main__():
-    pass
-
+def managerepo():
+    rm = RepoManager()
+    print(rm.parseRepoFile())
 
 
-
-
-
-
+if __name__ == '__main__':
+    managerepo()
