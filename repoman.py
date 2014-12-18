@@ -1,51 +1,145 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 """
 
 """
 import configparser
 import subprocess
+import sys
+import os
+from collections import OrderedDict
 
+
+REPOPATH = "/etc/yum.repos.d"
+REPOFILE = "redhat.repo"
 
 class RepoManager(object):
     
     def __init__(self):
 
-        #self.action = null
-        #self.uoptions = null
-        #self.repofile = self.getRepoFile()
-        self.repofile = 'sample.ini'
-
+        self.actions = ["Enable", "Disable"]
+        self.confirm = ["Yes", "No"]
+        self.repofile = self.getRepoFile()
 
     def getRepoFile(self):
         #search the filesystem to look for the repo file
-        pass
+	    if os.path.isdir(REPOPATH):
+	        try:
+	    	    os.chdir(REPOPATH)
+	        except OSError:
+	            print("Yum repository path does not exist. Please ensure this is a RHEL or RHEL variant system")
+	            sys.exit(0)
+	    if os.path.isfile(REPOFILE):
+	        return REPOFILE
+	    else:
+	        print("Repository file does not exist. Please confirm this is a RHEL system")
+	        sys.exit(0)
 
 
     def parseRepoFile(self):
-
-        #return a list of available repository names
+        #return a dict with id of available repository names
         if self.repofile:
             config = configparser.ConfigParser()
             config.read(self.repofile)
             available_repos  = config.sections()
+            
+            repo_dict = OrderedDict()
+            i = 1
 
-            #if not available_repos:
-            #use subprocess.call to run the yum repolist command           
+            for item in available_repos:
+                repo_dict.update({str(i):item})
+                i=i+1
+            return repo_dict
+
+    
+    def id_to_repolist(self, string_of_id):
+        if string_of_id:
+            return string_of_id.split(',')
 
 
+    def display_available_repo(self, repodict, header=True):
+        
+        if header:
+            subprocess.call('clear',shell=True)
+            print("\nWelcome to RepoMan, these are your available repositories: ")
+            print("###########################################################\n")
+        
+        if repodict:
+            print("#\t\tRepository Name")
+            for k in repodict.keys():
+                print(str(k)+"\t\t"+repodict[k])
+            
+            print("\n\n")
+
+    def display_confirmation(self, repolist):
+    
+        for repo in repolist:
+            print("(X)\t\t"+repo)
+            
+        
     def startshell(self):
-        #clean the user input based on type
-        #return uoptions and action
-        pass
+       
+        sysrepofiles = self.parseRepoFile()
+
+        if sysrepofiles:
+
+            self.display_available_repo(sysrepofiles)
+
+            while True:
+                user_action = input("What repository action would you like to perform? " + str(self.actions) + ": ")
+                if user_action.lower() in [i.lower() for i in self.actions]:
+                    break
+                else:
+                    print("Please type your option: enable or disable")
+    
+
+            while True:
+                user_options = str(input("Please provide the repository numbers, seperated by comma: "))
+           
+                if user_options:
+                    id_list = self.id_to_repolist(user_options)
+                
+                    actionable_repos = []
+
+                    print(id_list)
+                    print(type(id_list))
+
+                    for id in id_list:
+                        if id in sysrepofiles.keys():
+                            actionable_repos.append(sysrepofiles[id])
+                        else:
+                            print("Invalid input")
+                    if actionable_repos:
+                        break
+
+            while True:
+
+                self.display_confirmation(actionable_repos)
+                user_confirm = str(input("We should " + user_action + " the above repos? " + str(self.confirm) + ": "))
+        
+                if user_confirm.lower() in [i.lower() for i in self.confirm]:
+                    
+                    if user_confirm.lower() =="yes":
+                        self.processRequest(user_action, actionable_repos)
+                        break
+                    else:
+                        sys.exit(0)
+                
+        else:
+            print("Sorry we could not find any repository listed")
+            print("Please register the system with RHN and run yum repolist")
+            print("\n\n")
+            sys.exit(0)
 
 
-    def processRequest(self, action, choosenlist, uoptions):
-        pass
-
+    def processRequest(self, action, repolist):
+        
+        for repo in repolist:
+            es = subprocess.call('subscription-manager repos --'+action+" "+repo , shell=True)
+            
 
 def managerepo():
     rm = RepoManager()
-    print(rm.parseRepoFile())
+    rm.startshell()
 
 
 if __name__ == '__main__':
