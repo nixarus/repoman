@@ -106,9 +106,6 @@ class RepoManager(object):
                 
                     actionable_repos = []
 
-                    print(id_list)
-                    print(type(id_list))
-
                     for id in id_list:
                         if id in sysrepofiles.keys():
                             actionable_repos.append(sysrepofiles[id])
