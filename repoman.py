@@ -1,7 +1,12 @@
 #! /usr/bin/env python3
 """
+This script uses the subscription-manager command to mass-enable or mass-disable yum repositories/sofware channels. 
+Useful for RHEL 6, 7 based systems registered with Red Hat RHN using the certificate system.
+Requires Python 3 and above.
 
+Author: Nixarus
 """
+
 import configparser
 import subprocess
 import sys
@@ -68,6 +73,7 @@ class RepoManager(object):
             for k in repodict.keys():
                 print(str(k)+"\t\t"+repodict[k])
             
+            print("\nPlease press cntrl+c at any point to exit")
             print("\n\n")
 
     def display_confirmation(self, repolist):
@@ -81,7 +87,6 @@ class RepoManager(object):
         sysrepofiles = self.parseRepoFile()
 
         if sysrepofiles:
-
             self.display_available_repo(sysrepofiles)
 
             while True:
@@ -90,11 +95,12 @@ class RepoManager(object):
                     break
                 else:
                     print("Please type your option: enable or disable")
-    
+
 
             while True:
-                user_options = str(input("Please provide the repository numbers, seperated by comma: "))
-           
+
+                user_options = input("Please provide the repository numbers, seperated by comma: ")
+
                 if user_options:
                     id_list = self.id_to_repolist(user_options)
                 
@@ -114,8 +120,8 @@ class RepoManager(object):
             while True:
 
                 self.display_confirmation(actionable_repos)
-                user_confirm = str(input("We should " + user_action + " the above repos? " + str(self.confirm) + ": "))
-        
+                user_confirm = input("We should " + user_action + " the above repos? " + str(self.confirm) + ": ")
+                
                 if user_confirm.lower() in [i.lower() for i in self.confirm]:
                     
                     if user_confirm.lower() =="yes":
@@ -126,16 +132,31 @@ class RepoManager(object):
                 
         else:
             print("Sorry we could not find any repository listed")
-            print("Please register the system with RHN and run yum repolist")
+            print("Please register the system with (Certificate-based) RHN and run yum repolist")
             print("\n\n")
             sys.exit(0)
 
 
     def processRequest(self, action, repolist):
-        
+       
+        if action.lower() == "enable":
+            continous_form = "Enabling"
+        if action.lower() == "disable":
+            continous_form = "Disabling"
+
+        print("\n")
+        print("Processing repositories. Please wait, this might take some time...")
+        print("------------------------------------------------------------------")
+        print("\n")        
+
         for repo in repolist:
+            print(continous_form+" the " + repo + " repository")
             es = subprocess.call('subscription-manager repos --'+action+" "+repo , shell=True)
-            
+            if es != 0:
+               print("\nSomething went wrong.\nPlease confirm this is a RHEL 6 or 7 based System. Thank you.")
+            print("--\n")
+
+        print("Done!")
 
 def managerepo():
     rm = RepoManager()
@@ -143,4 +164,9 @@ def managerepo():
 
 
 if __name__ == '__main__':
-    managerepo()
+    
+    try:
+        managerepo()
+    except KeyboardInterrupt:
+        print("\nProgram is exiting...")
+
