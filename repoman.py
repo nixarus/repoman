@@ -1,9 +1,7 @@
 #! /usr/bin/env python3
 
 """
-copyright (c) 2014 by Nixarus.
-See LICENSE for more details.
-
+copyright (c) 2014 by Nixarus. See LICENSE for more details.
 Created by Nixarus. [http://www.nixarus.com]
 """
 
@@ -17,6 +15,7 @@ from collections import OrderedDict
 REPOPATH = "/etc/yum.repos.d"
 REPOFILE = "redhat.repo"
 
+
 class RepoManager(object):
     
     def __init__(self):
@@ -24,21 +23,22 @@ class RepoManager(object):
         self.actions = ["Enable", "Disable"]
         self.confirm = ["Yes", "No"]
         self.repofile = self.getRepoFile()
-
+        
     def getRepoFile(self):
         """search the filesystem to look for the repo file"""
 
-	    if os.path.isdir(REPOPATH):
-	        try:
-	    	    os.chdir(REPOPATH)
-	        except OSError:
-	            print("Yum repository path does not exist. Please ensure this is a RHEL or RHEL variant system")
-	            sys.exit(0)
-	    if os.path.isfile(REPOFILE):
-	        return REPOFILE
-	    else:
-	        print("Repository file does not exist. Please confirm this is a RHEL system")
-	        sys.exit(0)
+        if os.path.isdir(REPOPATH):
+            try:
+                os.chdir(REPOPATH)
+            except OSError:
+                print("Yum repository path does not exist. Please ensure this is a RHEL or RHEL variant system")
+                sys.exit(0)
+
+        if os.path.isfile(REPOFILE):
+            return REPOFILE
+        else:
+            print("Repository file does not exist. Please confirm this is a RHEL system")
+            sys.exit(0)
 
 
     def parseRepoFile(self):
@@ -163,9 +163,8 @@ def main():
 
 
 if __name__ == '__main__':
-    
+
     try:
         main()
     except KeyboardInterrupt:
         print("\nProgram is exiting...")
-
