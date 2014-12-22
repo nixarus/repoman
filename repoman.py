@@ -1,10 +1,10 @@
 #! /usr/bin/env python3
-"""
-This script uses the subscription-manager command to mass-enable or mass-disable yum repositories/sofware channels. 
-Useful for RHEL 6, 7 based systems registered with Red Hat RHN using the certificate system.
-Requires Python 3 and above.
 
-Author: Nixarus
+"""
+copyright (c) 2014 by Nixarus.
+See LICENSE for more details.
+
+Created by Nixarus. [http://www.nixarus.com]
 """
 
 import configparser
@@ -26,7 +26,8 @@ class RepoManager(object):
         self.repofile = self.getRepoFile()
 
     def getRepoFile(self):
-        #search the filesystem to look for the repo file
+        """search the filesystem to look for the repo file"""
+
 	    if os.path.isdir(REPOPATH):
 	        try:
 	    	    os.chdir(REPOPATH)
@@ -41,7 +42,8 @@ class RepoManager(object):
 
 
     def parseRepoFile(self):
-        #return a dict with id of available repository names
+        """Returns an id formated dictionary of available repository names"""
+
         if self.repofile:
             config = configparser.ConfigParser()
             config.read(self.repofile)
@@ -155,7 +157,7 @@ class RepoManager(object):
 
         print("Done!")
 
-def managerepo():
+def main():
     rm = RepoManager()
     rm.startshell()
 
@@ -163,7 +165,7 @@ def managerepo():
 if __name__ == '__main__':
     
     try:
-        managerepo()
+        main()
     except KeyboardInterrupt:
         print("\nProgram is exiting...")
 
