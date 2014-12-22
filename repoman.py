@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python3.4
 
 """
 copyright (c) 2014 by Nixarus. See LICENSE for more details.
@@ -17,13 +17,13 @@ REPOFILE = "redhat.repo"
 
 
 class RepoManager(object):
-    
+
     def __init__(self):
 
         self.actions = ["Enable", "Disable"]
         self.confirm = ["Yes", "No"]
         self.repofile = self.getRepoFile()
-        
+
     def getRepoFile(self):
         """search the filesystem to look for the repo file"""
 
@@ -42,19 +42,16 @@ class RepoManager(object):
 
 
     def parseRepoFile(self):
-        """Returns an id formated dictionary of available repository names"""
+        #Returns an id formated dictionary of available repository names
 
         if self.repofile:
             config = configparser.ConfigParser()
             config.read(self.repofile)
             available_repos  = config.sections()
-            
             repo_dict = OrderedDict()
-            i = 1
 
-            for item in available_repos:
-                repo_dict.update({str(i):item})
-                i=i+1
+            for index, item in enumerate(available_repos):
+                repo_dict.update({str(index + 1):item})
             return repo_dict
 
     
