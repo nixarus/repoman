@@ -1,3 +1,8 @@
+Repoman
+=======
+
+Motivation
+----------
 After registering a new RHEL box with RHN, its a long process disabling and enabling 
 repositories manually by running subscription manager one by one.
 
@@ -7,7 +12,16 @@ We use the subscription-manager command to mass-enable or mass-disable yum repos
 Useful for RHEL 6, 7 based systems registered with Red Hat RHN using the certificate system.
 Requires Python 3 and above.
 
-*Remember to change to your python 3 version number on top of the script file
+Usage
+-----
+Basic script. Download and make executable with chmod+x repoman.py.
+::
+    terminal# ./repoman.py
+
+Requirement
+-----------
+1. Python 3 and above.
+2. Remember to change to your python 3 version number on top of the script file
 
 
 
