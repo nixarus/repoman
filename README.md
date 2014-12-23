@@ -15,8 +15,7 @@ Requires Python 3 and above.
 Usage
 -----
 
-::
-    terminal# ./repoman.py
+`terminal# ./repoman.py`
 
 Requirement
 -----------
