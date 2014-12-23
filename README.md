@@ -1,8 +1,6 @@
 Repoman
 =======
 
-Motivation
-----------
 After registering a new RHEL box with RHN, its a long process disabling and enabling 
 repositories manually by running subscription manager one by one.
 
