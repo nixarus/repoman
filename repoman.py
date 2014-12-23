@@ -109,14 +109,15 @@ class RepoManager(object):
                         if id in sysrepofiles.keys():
                             actionable_repos.append(sysrepofiles[id])
                         else:
-                            print("Invalid input")
+                            print("'"+str(id)+"' is an Invalid input")
+                            print("---------Valid Repos-------------")
                     if actionable_repos:
                         break
 
             while True:
 
                 self.display_confirmation(actionable_repos)
-                user_confirm = input("We should " + user_action + " the above repos? " + str(self.confirm) + ": ")
+                user_confirm = input("We should " + user_action + " the above repo(s) only? " + str(self.confirm) + ": ")
                 
                 if user_confirm.lower() in [i.lower() for i in self.confirm]:
                     
