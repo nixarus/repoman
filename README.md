@@ -7,7 +7,7 @@ We use the subscription-manager command to mass-enable or mass-disable yum repos
 Useful for RHEL 6, 7 based systems registered with Red Hat RHN using the certificate system.
 Requires Python 3 and above.
 
-
+*Remember to change to your python 3 version number on top of the script file
 
 
 
