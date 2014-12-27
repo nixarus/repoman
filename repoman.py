@@ -24,7 +24,6 @@ if sys.version_info[0] < 3:
 class RepoManager(object):
 
     def __init__(self):
-
         self.actions = ["Enable", "Disable"]
         self.confirm = ["Yes", "No"]
         self.repofile = self.getRepoFile()
@@ -47,8 +46,8 @@ class RepoManager(object):
 
 
     def parseRepoFile(self):
-        #Returns an id formated dictionary of available repository names
-
+        """Returns an id formated dictionary of available repository names"""
+        
         if self.repofile:
             config = configparser.ConfigParser()
             config.read(self.repofile)
