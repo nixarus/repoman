@@ -15,10 +15,5 @@ Usage
 
 `terminal# ./repoman.py`
 
-Requirement
------------
-1. Python 3 and above.
-2. Remember to change to your python 3 version number on top of the script file
-
 
 
