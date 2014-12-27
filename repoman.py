@@ -26,9 +26,10 @@ class RepoManager(object):
     def __init__(self):
         self.actions = ["Enable", "Disable"]
         self.confirm = ["Yes", "No"]
-        self.repofile = self.getRepoFile()
+        self.repofile = self.get_repofile()
 
-    def getRepoFile(self):
+
+    def get_repofile(self):
         """search the filesystem to look for the repo file"""
 
         if os.path.isdir(REPOPATH):
@@ -45,7 +46,7 @@ class RepoManager(object):
             sys.exit(0)
 
 
-    def parseRepoFile(self):
+    def parse_repofile(self):
         """Returns an id formated dictionary of available repository names"""
         
         if self.repofile:
@@ -64,7 +65,7 @@ class RepoManager(object):
             return string_of_id.split(',')
 
 
-    def display_available_repo(self, repodict, header=True):
+    def display_available_repos(self, repodict, header=True):
         
         if header:
             subprocess.call('clear',shell=True)
@@ -85,12 +86,12 @@ class RepoManager(object):
             print("(X)\t\t"+repo)
             
         
-    def startshell(self):
+    def start_shell(self):
        
-        sysrepofiles = self.parseRepoFile()
+        sysrepofiles = self.parse_repofile()
 
         if sysrepofiles:
-            self.display_available_repo(sysrepofiles)
+            self.display_available_repos(sysrepofiles)
 
             while True:
                 user_action = input("What repository action would you like to perform? " + str(self.actions) + ": ")
@@ -126,7 +127,7 @@ class RepoManager(object):
                 if user_confirm.lower() in [i.lower() for i in self.confirm]:
                     
                     if user_confirm.lower() =="yes":
-                        self.processRequest(user_action, actionable_repos)
+                        self.process_request(user_action, actionable_repos)
                         break
                     else:
                         sys.exit(0)
@@ -138,7 +139,7 @@ class RepoManager(object):
             sys.exit(0)
 
 
-    def processRequest(self, action, repolist):
+    def process_request(self, action, repolist):
        
         if action.lower() == "enable":
             continous_form = "Enabling"
@@ -161,7 +162,7 @@ class RepoManager(object):
 
 def main():
     rm = RepoManager()
-    rm.startshell()
+    rm.start_shell()
 
 
 if __name__ == '__main__':
