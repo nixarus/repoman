@@ -15,7 +15,14 @@ from collections import OrderedDict
 REPOPATH = "/etc/yum.repos.d"
 REPOFILE = "redhat.repo"
 
-
+error_code_map = {
+                0:"Application Exiting",
+                100:"User is terminating application",
+                200:"Unknown error occured",
+                300:"Yum Repository Does not exist. Please ensure this is a RHEL 6, 7 or variant system",
+                400: ["Sorry we could not find any repository listed","Please register the system with (Certificate-based) RHN and run yum repolist"]
+            }
+                
 class RepoManager(object):
 
     def __init__(self):
@@ -24,6 +31,17 @@ class RepoManager(object):
         self.confirm = ["Yes", "No"]
         self.repofile = self.getRepoFile()
 
+    def system_exit(self, code, msgs=None):
+        
+        if msgs:
+            if type(msgs) not in [type([]), type(())]:
+                #make a single message a set
+                msgs = (msgs,)
+            for msg in msgs:
+                print(msg)
+        sys.exit(code)
+        
+
     def getRepoFile(self):
         """search the filesystem to look for the repo file"""
 
@@ -31,30 +49,35 @@ class RepoManager(object):
             try:
                 os.chdir(REPOPATH)
             except OSError:
-                print("Yum repository path does not exist. Please ensure this is a RHEL or RHEL variant system")
-                sys.exit(0)
+                self.system_exit(300,error_code_map[300])
 
         if os.path.isfile(REPOFILE):
             return REPOFILE
         else:
-            print("Repository file does not exist. Please confirm this is a RHEL system")
-            sys.exit(0)
+            self.system_exit(300,error_code_map[300])
 
 
     def parseRepoFile(self):
         #Returns an id formated dictionary of available repository names
 
         if self.repofile:
+
             config = configparser.ConfigParser()
             config.read(self.repofile)
             available_repos  = config.sections()
-            repo_dict = OrderedDict()
 
-            for index, item in enumerate(available_repos):
-                repo_dict.update({str(index + 1):item})
-            return repo_dict
+            if available_repos:
+                repo_dict = OrderedDict()
+
+                for index, item in enumerate(available_repos):
+                    repo_dict.update({str(index + 1):item})
+                return repo_dict
 
     
+    def subscribed_repository(self):
+        pass
+    
+
     def id_to_repolist(self, string_of_id):
         if string_of_id:
             return string_of_id.split(',')
@@ -74,6 +97,7 @@ class RepoManager(object):
             
             print("\nPlease press cntrl+c at any point to exit")
             print("\n\n")
+
 
     def display_confirmation(self, repolist):
     
@@ -125,13 +149,10 @@ class RepoManager(object):
                         self.processRequest(user_action, actionable_repos)
                         break
                     else:
-                        sys.exit(0)
+                        self.system_exit(0,error_code_map[0])
                 
         else:
-            print("Sorry we could not find any repository listed")
-            print("Please register the system with (Certificate-based) RHN and run yum repolist")
-            print("\n\n")
-            sys.exit(0)
+            self.system_exit(400,error_code_map[400])
 
 
     def processRequest(self, action, repolist):
@@ -151,7 +172,7 @@ class RepoManager(object):
             es = subprocess.call('subscription-manager repos --'+action+" "+repo , shell=True)
             if es != 0:
                print("\nSomething went wrong.\nPlease confirm this is a RHEL 6 or 7 based System. Thank you.")
-            print("--\n")
+            print("==")
 
         print("Done!")
 
@@ -166,3 +187,4 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         print("\nProgram is exiting...")
+
