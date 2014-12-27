@@ -15,6 +15,9 @@ from collections import OrderedDict
 REPOPATH = "/etc/yum.repos.d"
 REPOFILE = "redhat.repo"
 
+if sys.version_info[0] < 3:
+    input = raw_input
+
 error_code_map = {
                 0:"Application Exiting",
                 100:"User is terminating application",
