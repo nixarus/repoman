@@ -1,4 +1,4 @@
-#! /usr/bin/env python3.4
+#! /usr/bin/env python
 
 """
 copyright (c) 2014 by Nixarus. See LICENSE for more details.
@@ -9,11 +9,16 @@ import configparser
 import subprocess
 import sys
 import os
+import sys
 from collections import OrderedDict
 
 
 REPOPATH = "/etc/yum.repos.d"
 REPOFILE = "redhat.repo"
+
+
+if sys.version_info[0] < 3:
+    input = raw_input
 
 
 class RepoManager(object):
